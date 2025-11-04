@@ -1,68 +1,61 @@
-# Paper to Marp Presentation Automation
+# Paper-to-Marp Presentation Generator
 
-Fully automated workflow for generating Marp presentations from academic paper repositories using Claude.
+Automated workflow for generating Marp presentations from academic paper repositories using Claude Code.
 
-## Overview
+## What This Does
 
-This workflow uses Claude to read paper sources, intelligently select figures, and generate high-quality presentation slides with real content extracted from the paper - no manual intervention required.
+Give Claude a GitHub URL of a paper repository, and it automatically:
+- Clones the repository
+- Reads the paper LaTeX sources
+- Intelligently selects 4-8 key figures
+- Converts PDF figures to PNG
+- Generates presentation slides with real content from the paper
+- Compiles to PDF
+- Cleans up temporary files
 
-## Prerequisites
+## Quick Start
 
-- Python 3 with PyMuPDF: `pip3 install PyMuPDF`
-- Node.js with Marp CLI: `npm install -g @marp-team/marp-cli`
-- Git
-- Claude Code (you're using it now!)
+### Prerequisites
 
-## Usage
+```bash
+# Install dependencies
+pip3 install PyMuPDF
+npm install -g @marp-team/marp-cli
+```
 
-You can run this from **anywhere** - the workflow is not directory-dependent.
+### Usage
 
-### In Claude Code
-
-Simply tell Claude:
+From **anywhere** (this is location-independent), tell Claude Code:
 
 ```
-Make me a marp presentation from this paper repo: https://github.com/USER/REPO
+Make me a marp presentation from https://github.com/USER/REPO
 Output to: ~/talks/my-talk
 ```
 
-or
+That's it! Claude will handle everything automatically.
+
+### Example
 
 ```
 Make me a marp presentation from https://github.com/synwww/consolidation-paper-2023
-Put it in ~/Dropbox/Talks/censorship
+Output to: ~/talks/consolidation-talk
 ```
 
-That's it! Claude will:
-1. Clone the repository
-2. Read the paper LaTeX sources
-3. Intelligently select 4-8 key figures
-4. Convert figures to PNG
-5. Generate presentation with real content from the paper
-6. Compile to PDF
-7. Open the result
-8. Clean up (remove cloned repo)
+## How It Works
 
-### What Claude Does (Automatically)
+The workflow (`/generate` slash command) automatically:
 
-Following the instructions in `CLAUDE_WORKFLOW.md`, Claude will:
-
-- **Read paper sources** - Extract title, findings, methodology from .tex files
-- **Smart figure selection** - Pick 4-8 most important figures, avoid redundant regional variants
-- **Real content** - Use actual numbers, findings, and conclusions from the paper
-- **Proper authors** - Get real author names (may look up arXiv if needed)
-- **Clean presentation** - Basic markdown, 700px figures, 3-4 bullets per slide
-
-## Files in This Directory
-
-- **`CLAUDE_WORKFLOW.md`** - Complete step-by-step instructions for Claude (the main file)
-- **`README.md`** - This file (for humans)
-- **`generate_presentation.py`** - Optional helper script (Claude can do everything without it)
-- **`config.json`** - Configuration defaults
+1. **Clones the repository** to a temporary location
+2. **Reads paper sources** - Extracts title, findings, and methodology from `.tex` files
+3. **Lists available figures** - Finds PDFs in `graphics/` or `figures/` directory
+4. **Selects key figures** - Intelligently picks 4-8 important figures, avoiding redundant regional variants
+5. **Converts to PNG** - Uses PyMuPDF to convert PDF figures at 3x resolution
+6. **Generates presentation** - Creates Marp markdown with real content from the paper
+7. **Compiles to PDF** - Uses Marp CLI to generate final presentation
+8. **Opens result** - Displays the PDF
+9. **Cleans up** - Removes cloned repository, keeping only figures and presentation
 
 ## Output Structure
-
-After running, you'll have:
 
 ```
 <output-directory>/
@@ -71,89 +64,69 @@ After running, you'll have:
 └── <presentation-name>.pdf   # Final presentation
 ```
 
-Note: The cloned repository is automatically removed after figure conversion.
+## Style Guidelines
 
-## Key Features
-
-### Intelligent Figure Selection
-Claude reads paper content and figure names to select:
-- Pipeline/methodology diagrams
-- Main result charts
-- Key consolidation/comparison figures
-- **Avoids:** Regional variants, redundant figures, non-essential plots
-
-### Real Content Extraction
-- Extracts actual findings with specific numbers from paper
-- Uses real conclusions and implications
-- No placeholder text or "[EDIT: ...]" templates
-
-### Simple Formatting
-- Clean, basic markdown (no complex HTML/CSS)
-- 700px figure width (works well for most projectors)
+Presentations automatically follow these conventions:
+- Capitalize "Internet" (never lowercase)
+- Use "Method" not "Methodology"
+- Use "Summary" instead of "Conclusions"
+- Include QR code to feamster.github.io on final slide
+- 700px figure width
 - 3-4 bullets per slide
 - One figure per slide
 
-## Example
+## Manual Script Usage
 
+If you prefer to use the Python script directly:
+
+```bash
+# List available figures
+python3 generate_presentation.py --repo URL --output DIR --list-figures
+
+# Generate with auto-selected figures
+python3 generate_presentation.py --repo URL --output DIR
+
+# Generate with specific figures
+python3 generate_presentation.py --repo URL --output DIR --figures pipeline.pdf results.pdf
 ```
-User: Make me a marp presentation from https://github.com/synwww/consolidation-paper-2023
-      Output to: ~/talks/consolidation-talk
 
-Claude:
-[Clones repo]
-[Reads paper.tex, abstract.tex, introduction.tex]
-[Selects 6 key figures: pipeline, as_count, ns_as_stacked_org, ns_as_stacked, index_stacked_org, as_stacked]
-[Converts PDFs to PNGs]
-[Generates presentation with real findings: "Cloudflare and Amazon each host over 30%..."]
-[Compiles to PDF]
-[Opens result]
-```
+## Configuration
 
-Result: 17-slide presentation with actual content, proper authors, and key figures.
+Edit `config.json` to customize:
+- Default output directory
+- Figure width
+- QR code settings
+- Marp theme
 
-## Customization
+## Example Output
 
-If you want to modify the presentation structure or style:
-1. Edit the markdown template in `CLAUDE_WORKFLOW.md` (Step 6)
-2. Change figure width (currently 700px)
-3. Modify slide structure (currently: intro → methods → findings → figures → implications → conclusions)
+From the consolidation paper (arXiv:2110.15345):
+- 17 slides total
+- 6 carefully selected figures
+- Real findings: "Cloudflare and Amazon each host over 30%..."
+- Proper authors extracted from paper
+- Clean, professional formatting
 
 ## Troubleshooting
 
-### "Authors are wrong"
-- Paper .tex files often have placeholder authors
-- Claude will try to look up real authors from arXiv or published version
-- You can manually provide: "Make presentation, authors are: John Doe, Jane Smith"
+**Figures not showing in PDF:**
+- Ensure PNG conversion completed successfully
+- Check that `--allow-local-files` flag is used with Marp
 
-### "Too many/wrong figures"
-- Claude selects based on paper content and figure names
-- You can guide: "Make presentation but only use the main consolidation figures, skip regional breakdowns"
+**Wrong or placeholder authors:**
+- Script attempts to extract real authors from arXiv or published version
+- You can manually specify: "Make presentation, authors are: John Doe, Jane Smith"
 
-### "Content is generic"
-- Should not happen! Claude reads actual paper content
-- If it does, ask Claude to re-read the paper sections and regenerate
+**Too many figures selected:**
+- Guide Claude: "Use only main consolidation figures, skip regional breakdowns"
 
-## Advanced Usage
+## Requirements
 
-If you want to use the helper script directly:
-
-```bash
-cd ~/src/paper-marp
-
-# This is just for manual testing - Claude does all this automatically!
-python3 generate_presentation.py --repo <URL> --output <DIR> --list-figures
-```
-
-But normally you don't need to do this - just tell Claude what you want!
-
-## Location
-
-This directory can be anywhere on your system. The workflow is self-contained and location-independent.
-
-- Current location: `~/src/paper-marp/`
-- Can be moved anywhere
-- Claude follows `CLAUDE_WORKFLOW.md` regardless of location
+- Python 3.x
+- Node.js
+- Git
+- Claude Code
 
 ## License
 
-Public domain / Use however you want
+Public domain - use however you want.
