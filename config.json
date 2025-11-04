@@ -1,0 +1,16 @@
+{
+  "default_figure_width": "700px",
+  "figure_resolution_scale": 3,
+  "default_theme": "default",
+  "common_graphics_dirs": ["graphics", "figures", "imgs", "images", "fig"],
+  "key_figures": {
+    "consolidation-paper": [
+      "pipeline.drawio.pdf",
+      "as_count.pdf",
+      "ns_as_stacked_org.pdf",
+      "ns_as_stacked.pdf",
+      "index_stacked_org.pdf",
+      "as_stacked.pdf"
+    ]
+  }
+}
