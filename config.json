@@ -1,6 +1,13 @@
 {
   "default_figure_width": "700px",
+  "large_figure_width": "950px",
+  "small_figure_width": "500px",
   "figure_resolution_scale": 3,
   "default_theme": "default",
-  "common_graphics_dirs": ["graphics", "figures", "imgs", "images", "fig"]
+  "common_graphics_dirs": ["graphics", "figures", "imgs", "images", "fig"],
+  "required_deliverables": {
+    "markdown": true,
+    "pdf": true,
+    "speaker_notes": true
+  }
 }

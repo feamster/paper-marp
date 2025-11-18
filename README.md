@@ -61,7 +61,8 @@ The workflow (`/generate` slash command) automatically:
 <output-directory>/
 ├── figures/                  # Converted PNG figures
 ├── <presentation-name>.md    # Marp markdown source
-└── <presentation-name>.pdf   # Final presentation
+├── <presentation-name>.pdf   # Final presentation
+└── speaker-notes.md          # Speaker notes (REQUIRED)
 ```
 
 ## Style Guidelines
@@ -71,9 +72,66 @@ Presentations automatically follow these conventions:
 - Use "Method" not "Methodology"
 - Use "Summary" instead of "Conclusions"
 - Include QR code to feamster.github.io on final slide
-- 700px figure width
 - 3-4 bullets per slide
 - One figure per slide
+
+### Figure Sizing
+- **Default figure width**: 700px for standard figures
+- **Large figures**: 950px for key results, architecture diagrams, and detailed comparisons
+- **Small figures**: 500px for supporting visuals or QR codes
+- Use larger figures (950px) for slides that are primarily visual (e.g., pipeline diagrams, main results)
+- Ensure figures are readable from the back of the room
+
+### Author Formatting
+- **CRITICAL**: Author names must NEVER break mid-name across lines
+- Use non-breaking spaces or proper line breaks between author names
+- Format: `Author One, Author Two, Author Three, **Presenter Name**`
+- Bold the presenter's name
+- Test that author list displays correctly on title slide
+
+## Required Deliverables
+
+**ALWAYS generate the following when creating presentations:**
+
+1. **Presentation markdown** (`[name].md`)
+2. **Compiled PDF** (`[name].pdf`)
+3. **Speaker notes** (`speaker-notes.md`) - **REQUIRED for every presentation**
+
+### Speaker Notes Requirements
+
+Speaker notes must include:
+- **Slide-by-slide guidance** - What to say for each slide
+- **Key messages** - Main points to emphasize
+- **Timing guide** - Approximate time per section
+- **Transition phrases** - How to move between topics
+- **Potential Q&A** - Anticipated questions and suggested answers
+- **Audience-specific angles** - How to tailor message (e.g., DARPA, NSF, industry)
+
+Example speaker notes structure:
+```markdown
+# [Title] - Speaker Notes
+
+## Slide 1: Title
+- Talking points...
+
+## Slide 2: Problem
+- Key messages...
+
+## Timing Guide
+- Intro: 2 min
+- Method: 5 min
+- Results: 8 min
+- Conclusion: 2 min
+
+## Key Messages to Emphasize
+1. Main contribution
+2. Key results
+3. Impact
+
+## Potential Questions & Answers
+**Q: Question?**
+A: Answer.
+```
 
 ## Manual Script Usage
 
