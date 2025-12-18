@@ -19,7 +19,7 @@ Give Claude a GitHub URL of a paper repository, and it automatically:
 
 ```bash
 # Install dependencies
-pip3 install PyMuPDF
+brew install poppler  # provides pdftoppm for PDF to PNG conversion
 npm install -g @marp-team/marp-cli
 ```
 
@@ -49,7 +49,7 @@ The workflow (`/generate` slash command) automatically:
 2. **Reads paper sources** - Extracts title, findings, and methodology from `.tex` files
 3. **Lists available figures** - Finds PDFs in `graphics/` or `figures/` directory
 4. **Selects key figures** - Intelligently picks 4-8 important figures, avoiding redundant regional variants
-5. **Converts to PNG** - Uses PyMuPDF to convert PDF figures at 3x resolution
+5. **Converts to PNG** - Uses `pdftoppm` to convert PDF figures at 300 DPI (preserves full page including axes)
 6. **Generates presentation** - Creates Marp markdown with real content from the paper
 7. **Compiles to PDF** - Uses Marp CLI to generate final presentation
 8. **Opens result** - Displays the PDF
@@ -76,10 +76,11 @@ Presentations automatically follow these conventions:
 - One figure per slide
 
 ### Figure Sizing
-- **Default figure width**: 700px for standard figures
-- **Large figures**: 950px for key results, architecture diagrams, and detailed comparisons
-- **Small figures**: 500px for supporting visuals or QR codes
-- Use larger figures (950px) for slides that are primarily visual (e.g., pipeline diagrams, main results)
+- **IMPORTANT**: Use `height` not `width` to size figures - width-based sizing can crop the bottom of figures (cutting off x-axis labels)
+- **Default figure height**: `![height:500px](figure.png)` for standard figures
+- **Large figures**: `![height:550px](figure.png)` for key results
+- **Small figures**: `![height:400px](figure.png)` for supporting visuals
+- **Never use `![bg ...]` syntax** for figures - it's for backgrounds and causes positioning issues
 - Ensure figures are readable from the back of the room
 
 ### Author Formatting
@@ -170,6 +171,11 @@ From the consolidation paper (arXiv:2110.15345):
 **Figures not showing in PDF:**
 - Ensure PNG conversion completed successfully
 - Check that `--allow-local-files` flag is used with Marp
+
+**Figure axes cut off (x-axis labels missing):**
+- Use `pdftoppm` instead of PyMuPDF for PDF to PNG conversion: `pdftoppm -png -r 300 figure.pdf output`
+- PyMuPDF respects tight crop boxes in PDFs and will cut off content; pdftoppm renders the full page
+- In Marp, use `![height:500px]` instead of `![width:950px]` - width-based sizing crops the bottom
 
 **Wrong or placeholder authors:**
 - Script attempts to extract real authors from arXiv or published version
